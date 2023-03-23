@@ -19,24 +19,25 @@ ssize_t readln(int fd, char *line, size_t size){
 
     if(bytes_testes < bytes_read_aux){
         int i = 0;
-        while(bytes_testes < bytes_read_aux && buffer_aux[bytes_testes] != '\n'){
+        while(bytes_testes < bytes_read_aux && buffer_aux[bytes_testes] != '\n' && bytes_read_aux > 0){
             line[i++] = buffer_aux[bytes_testes++];
         }
         if(buffer_aux[bytes_testes] == '\n'){
             line[i++] = buffer_aux[bytes_testes++];
             line[i] = '\0';
             if(bytes_testes >= bytes_read_aux)
-                bytes_testes = 0;
+                bytes_read_aux = 0;
             return i;
         }else{
-            bytes_testes = 0;
+            bytes_read_aux = 0;
             temp = i;
         }
     }
 
     bytes_read_aux = read(fd, buffer_aux, size);
-    
-    while(bytes_testes < bytes_read_aux && buffer_aux[bytes_testes] != '\n'){
+    bytes_testes = 0;
+
+    while(bytes_testes < bytes_read_aux && buffer_aux[bytes_testes] != '\n' && bytes_read_aux > 0){
         line[temp++] = buffer_aux[bytes_testes++];
     }
 
@@ -47,6 +48,7 @@ ssize_t readln(int fd, char *line, size_t size){
 
     return temp;
 }
+
 
 int main(int argc, char** argv){
 
